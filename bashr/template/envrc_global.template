@@ -1,0 +1,44 @@
+# =====================
+# global config
+# =====================
+# @init
+## @set color
+C_RED="\033[1;31m"
+C_GRE="\033[1;32m"
+C_BLU="\033[1;34m"
+C_END="\033[0m"
+
+# @global
+## @set global conf
+MAIL=fukushima@grasys.io
+## @set badge iterm2
+export badge='localhost'
+
+# @gcloud
+## @gcloud: conf
+G_PROJECT_NAME=grasys-dev
+G_PROJECT_ID=`gcloud projects list --format json | jq -r ".[] | select(.name == \"${G_PROJECT_NAME}\") | .projectId"`
+## @gcloud: head
+# echo "----------------------------------------------------------------------"
+# echo -e "$C_BLU`cowsay -f stegosaurus "set local ptofile gcp [${G_PROJECT_NAME}]"`$C_END"
+# echo "----------------------------------------------------------------------"
+## @gcloud: set
+gcloud config set account ${MAIL} >/dev/null 2>&1
+export PROJECT_ID=${G_PROJECT_ID}
+export GOOGLE_PROJECT=${G_PROJECT_ID}
+gcloud config set project ${PROJECT_ID}
+
+# @aws
+## @aws: conf
+A_PROJECT_NAME=fukushima@grasys.io
+## @aws: head
+# echo "----------------------------------------------------------------------"
+# echo -e "$C_RED`cowsay -f stegosaurus "set local ptofile gcp [${G_PROJECT_NAME}]"`$C_END"
+# echo "----------------------------------------------------------------------"
+## @aws: set
+export AWS_PROFILE=${A_PROJECT_NAME}
+
+# @global head
+echo -e "$C_GRE======================================================================$C_END"
+echo -e "$C_GRE`cowsay -f stegosaurus "set local ptofile gcp/aws [grasys]"`$C_END"
+echo -e "$C_GRE======================================================================$C_END"

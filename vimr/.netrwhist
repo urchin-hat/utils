@@ -1,0 +1,9 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =7
+let g:netrw_dirhist_7='/Users/fukushima/Project/ldap2iam/terraform/monitoring'
+let g:netrw_dirhist_6='/Users/fukushima/Project/andbox2/app/mysite'
+let g:netrw_dirhist_5='/Users/fukushima/Project/mare/prd-mare-etc/terraform/prd/memstore'
+let g:netrw_dirhist_4='/Users/fukushima/Project/gokuuma-terraform/prd'
+let g:netrw_dirhist_3='/Users/fukushima/Project/gokuuma-terraform/.git'
+let g:netrw_dirhist_2='/Users/sfukushima/arrow/sort'
+let g:netrw_dirhist_1='/Users/sfukushima/Desktop/softbank/yum/tasks'

@@ -1,0 +1,35 @@
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin 'VundleVim/Vundle.vim'
+
+" Plugin
+Plugin 'airblade/vim-gitgutter'
+Plugin 'ekalinin/dockerfile.vim'
+Plugin 'cespare/vim-toml'
+Plugin 'pprovost/vim-ps1'
+Plugin 'rust-lang/rust.vim'
+Plugin 'fatih/vim-go'
+Plugin 'elzr/vim-json'
+Plugin 'leafgarland/typescript-vim'
+Plugin 'mxw/vim-jsx'
+Plugin 'hashivim/vim-terraform'
+
+call vundle#end()
+filetype plugin indent on
+
+set cursorline
+set cursorcolumn
+syntax on
+set title
+set ambiwidth=double
+set tabstop=4
+set expandtab
+set shiftwidth=4
+set smartindent
+set cursorline
+set cursorcolumn
+set number
+:syntax on

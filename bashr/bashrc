@@ -1,0 +1,75 @@
+#########################
+# grasys Fukushima
+#########################
+#
+# 1. init
+export DEV_NAME="gfukushima"
+export PROFILE="grasys"
+export badge='localhost'
+
+source /usr/local/etc/bash_completion.d/git-prompt.sh > /dev/null
+source /usr/local/etc/bash_completion.d/git-completion.bash > /dev/null
+
+[ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
+
+GIT_PS1_SHOWDIRTYSTATE=true
+PS1='[\u@\W$(__git_ps1 "(\033[32m\]%s\[\033[0m\])")\]]$ '
+# PS1="[\u@\W]\$ "
+## bash_history
+HISTSIZE=1000
+export HISTIGNORE="fg*:bg*:history*:cd*:hs*"
+## editor
+export EDITOR=vim
+eval "$(direnv hook bash)"
+
+#
+# 2. PATH
+## coreutiles
+## findutils
+export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+
+#gcloud config set core/custom_ca_certs_file /Users/sfukushima/.ssh/certadmin.pem
+
+#
+# 3. eval
+export PATH="$HOME/.anyenv/bin:$PATH"
+eval "$(anyenv init -)"
+export PYENV_ROOT="$HOME/.anyenv/envs/pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
+
+#
+# 4. alias
+alias sbp='source ~/.bash_profile'
+alias ssh='/usr/local/custom/ssh-change-profile'
+alias s2h='/usr/bin/ssh'
+alias gssh='/usr/local/custom/gcloud-ssh-change-profile'
+alias sp='/usr/local/custom/local-change-profile'
+alias spg='/usr/local/custom/local-change-profile genshin && /usr/local/custom/set-image-genshin'
+alias cig='/usr/local/custom/set-image-genshin'
+alias cenvrc='/usr/local/custom/cenvrc'
+alias ls='ls --color'
+alias ll='ls -lah'
+alias la='ls -a'
+alias grep='grep --color'
+alias fgrep='fgrep --color'
+alias df='df -h'
+alias vi='vim'
+alias his='history'
+alias hs='history | fgrep $1'
+alias drun='docker run -itd $1 /bin/sh'
+alias venv='virtualenv'
+alias d='docker'
+alias k='kubectl'
+alias gb='git branch'
+alias gc='git checkout'
+alias gf='git fetch'
+alias gp='git pull'
+alias cl='clear'
+alias bcat='od'
+alias vmp='vim +PluginInstall +qall'
+alias ssh_key_reload='ssh-add -D && find $HOME/.ssh/* -type f | grep -v -e pub -e config -e known_hosts -e openldap.pem | xargs ssh-add'
+
+## brew
+alias brew="env PATH=${PATH/\/Users\/${USER}\/.anyenv\/envs\/*env\/shims:/} brew"
+. "$HOME/.cargo/env"

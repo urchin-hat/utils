@@ -1,0 +1,12 @@
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
+ export PATH=~/.npm-global/bin:$PATH
+. "$HOME/.cargo/env"
+
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash" || true
+
+function iterm2_print_user_vars() {
+    iterm2_set_user_var badge $badge
+}
+
