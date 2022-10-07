@@ -1,0 +1,36 @@
+#!/bin/bash
+if [ $# = 1 ]; then
+  case "$1" in
+    "-pl" | "--list" )
+      cat $HOME/.ssh/gcp_project/project_list.csv | tr ',' '\t' && echo ""
+      exit 0;;
+    *)
+      STRING=`cat $HOME/.ssh/gcp_project/project_list.csv | grep -m1 $1`;;
+  esac
+else
+  echo "Not enough arguments."
+  exit 1
+fi
+
+if [ -z "$STRING" ]; then
+  echo "There is no match.($HOME/.ssh/gcp_project/project_list)"
+fi
+# set profile, project, zone
+profile=`echo $STRING | cut -d "," -f2`
+gcp_project=`echo $STRING | cut -d "," -f3`
+gcp_zone=`echo $STRING | cut -d "," -f4`
+instance=`echo $STRING | cut -d "," -f5`
+
+# set profile
+echo -ne "\033]1337;SetProfile=$profile\a"
+# tab name
+echo -ne "\033]0;$gcp_project-ops\007"
+# gcloud ssh login
+echo "gcloud ssh is $gcp_project:$instance..."
+gcloud compute ssh --zone "$gcp_zone" "$instance"  --tunnel-through-iap --project "$gcp_project"
+
+# set profile(default)
+echo -ne "\033]1337;SetProfile=grasys\a"
+echo -ne "\033]0;localhost\007"
+
+exit 0

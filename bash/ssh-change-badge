@@ -1,0 +1,11 @@
+#!/bin/bash
+# validation
+[ $# = 0 ] && echo argument error  && exit 1
+
+# set badge
+export badge='$@'
+
+# ssh
+/usr/bin/ssh -A "$@"
+
+exit 0

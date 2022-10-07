@@ -1,0 +1,11 @@
+#!/bin/bash
+# check argument
+if [ $# = 1 ]; then
+    export PROFILE=$1
+fi
+
+echo "change profile: $PROFILE..."
+# set profile
+echo -ne "\033]1337;SetProfile=${PROFILE}\a"
+
+exit 0

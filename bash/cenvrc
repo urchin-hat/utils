@@ -1,0 +1,169 @@
+#!/bin/bash
+# config
+EM=fukushima@grasys.io
+
+# func(共通部分)
+help() {
+  echo "Usage:  cenvrc [option]"
+  echo "DESCRIPTION:  create .envrc command"
+  echo "OPTHION:"
+  echo -e "  --create/-c : "
+  echo -e "\t.envrcファイルを作成します"
+  echo -e "  --generate/-g : "
+  echo -e "\t.envrcファイルを作成します(createと同様)"
+  echo -e "  --dryrun/-d : "
+  echo -e "\t作成される.envrcファイルを表示します"
+  echo -e "  -- help/-h : "
+  echo -e "\tヘルプを表示します"
+  echo -e "  --version/-v : "
+  echo -e "\tバージョンを表示します"
+}
+
+function fc_common () {
+    echo "# @init"
+    echo "## @set color"
+    echo "C_RED=\"\033[1;31m\""
+    echo "C_GRE=\"\033[1;32m\""
+    echo "C_BLU=\"\033[1;34m\""
+    echo "C_END=\"\033[0m\""
+    echo ""
+    echo "FM=\`cowsay -ls | tail -n 3 | tr ' ' '\n' | shuf | head -n 1\`"
+    echo ""
+    echo "# @global"
+    echo "## @set global conf"
+    echo "MAIL=${EM}"
+    echo ""
+    echo "# set: local"
+    echo "# ---------------------"
+}
+
+function fc_ba () {
+    echo "## @set badge iterm2"
+    echo "export badge=\"\$(basename \`pwd\`)-git\""
+    echo "# ---------------------"
+    echo "# export badge=\"\${G_PROJECT_NAME}\""
+    echo "# export badge=\"\${AWS_PROFILE}\""
+}
+
+# func provider
+function fc_google_cloud () {
+    fc_common
+    echo "# @gcloud"
+    echo "## @gcloud: conf"
+    echo "G_PROJECT_NAME=$1"
+    echo "G_PROJECT_ID=\`gcloud projects list --format json | jq -r \".[] | select(.name == \\\"\${G_PROJECT_NAME}\\\") | .projectId\"\`"
+    echo "## @gcloud: head"
+    echo "echo -e \"\$C_BLU----------------------------------------------------------------------\$C_END\""
+    echo "echo -e \"\$C_BLU\`cowsay -f \${FM} \"set local ptofile gcp [\${G_PROJECT_NAME}]\"\`\$C_END\""
+    echo "echo -e \"\$C_BLU----------------------------------------------------------------------\$C_END\""
+    echo "## @gcloud: set"
+    echo "gcloud config set account \${MAIL} >/dev/null 2>&1"
+    echo "export PROJECT_ID=\${G_PROJECT_ID}"
+    echo "export GOOGLE_PROJECT=\${G_PROJECT_ID}"
+    echo "gcloud config set project \${PROJECT_ID}"
+    fc_ba
+}
+
+function fc_amazon_web () {
+    fc_common
+    echo "# @aws"
+    echo "## @aws: conf"
+    echo "A_PROJECT_NAME=$1"
+    echo "## @aws: head"
+    echo "echo -e \"\$C_RED----------------------------------------------------------------------\$C_END\""
+    echo "echo -e \"\$C_RED\`cowsay -f \${FM} \"set local ptofile aws [\${A_PROJECT_NAME}]\"\`\$C_END\""
+    echo "echo -e \"\$C_RED----------------------------------------------------------------------\$C_END\""
+    echo "## @aws: set"
+    echo "export AWS_PROFILE=\${A_PROJECT_NAME}"
+    fc_ba
+}
+
+function fc_ms_azure () {
+    fc_common
+    fc_ba
+}
+
+
+
+# main
+# cloud provider
+shopt -s nocasematch
+if [ $# -ne 0 ]; then
+    declare op=$1
+    case "$op" in
+    "--help" | "-h")
+        help
+        ;;
+    "--version" | "-v")
+        echo "cenvrc v1.0"
+        echo "create .envrc command"
+        echo ""
+        echo "Copyright (C) 2022 sfukushima, @Grasys.inc."
+        ;;
+    "--dryrun" | "-d" | "--create" | "-c" | "--generate" | "-g")
+        read -p "What's Cloud Provider?(google[g]/amazon[a]/microsoft[m]): " cp
+        case "$cp" in
+            "google" | "g")
+                read -p "What is the name of your project?(google cloud): " pj
+                [ -z "$pj" ] && echo "No project name entered..." && exit 1
+                case "$op" in
+                    "--dryrun" | "-d")
+                        echo ""
+                        echo "dryrun..."
+                        echo "===================================================================="
+                        fc_google_cloud $pj
+                        echo "===================================================================="
+                        ;;
+                    "--create" | "-c" | "--generate" | "-g")
+                        result=`fc_google_cloud $pj`
+                        echo "create .envrc file"
+                        echo "$result" > .envrc
+                        ;;
+                esac
+                ;;
+            "amazon" | "a")
+                read -p "What is the name of your project?(amazon web service): " pj
+                [ -z "$pj" ] && echo "No project name entered..." && exit 2
+                case "$op" in
+                    "--dryrun" | "-d")
+                        echo "dryrun..."
+                        echo "===================================================================="
+                        fc_amazon_web $pj
+                        echo "===================================================================="
+                        ;;
+                    "--create" | "-c" | "--generate" | "-g")
+                        result=`fc_amazon_web $pj`
+                        echo "create .envrc file"
+                        echo "$result" > .envrc
+                        ;;
+                esac
+                ;;
+            "microsoft" | "m")
+                read -p "What is the name of your project?(microsoft azure): " pj
+                [ -z "$pj" ] && echo "No project name entered..." && exit 3
+                case "$op" in
+                    "--dryrun" | "-d")
+                        echo "dryrun..."
+                        echo "===================================================================="
+                        fc_ms_azure $pj
+                        echo "===================================================================="
+                        ;;
+                    "--create" | "-c" | "--generate" | "-g")
+                        result=`fc_ms_azure $pj`
+                        echo "create .envrc file"
+                        echo "$result" > .envrc
+                        ;;
+                esac
+                ;;
+            *)
+                echo "Ops! This provider does not support"
+                ;;
+        esac
+        ;;
+    *)
+        help
+        ;;
+    esac
+else
+    help
+fi
