@@ -2,6 +2,10 @@
 IMG_DIR="/Users/fukushima/Documents/config/iterm2/picture"
 IMG_FILE=`find $IMG_DIR/genshin -type f | grep -e .*.jpg$ -e .*.png$ | shuf | head -1`
 
+if [ $# = 1 ]; then
+    IMG_FILE=`find $IMG_DIR/genshin/ -type f | grep -e .*.jpg$ -e .*.png$ | grep $1`
+fi
+
 /usr/bin/osascript <<EOF
 tell application "iTerm2"
   tell current session of current window
@@ -9,3 +13,5 @@ tell application "iTerm2"
   end tell
 end tell
 EOF
+
+exit 0

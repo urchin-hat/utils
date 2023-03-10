@@ -83,6 +83,11 @@ function fc_ms_azure () {
     fc_ba
 }
 
+function fc_local () {
+    fc_common
+    fc_ba
+}
+
 
 
 # main
@@ -95,13 +100,13 @@ if [ $# -ne 0 ]; then
         help
         ;;
     "--version" | "-v")
-        echo "cenvrc v1.0"
+        echo "cenvrc v1.1"
         echo "create .envrc command"
         echo ""
         echo "Copyright (C) 2022 sfukushima, @Grasys.inc."
         ;;
     "--dryrun" | "-d" | "--create" | "-c" | "--generate" | "-g")
-        read -p "What's Cloud Provider?(google[g]/amazon[a]/microsoft[m]): " cp
+        read -p "What's Cloud Provider?(google[g]/amazon[a]/microsoft[m]/local[l]): " cp
         case "$cp" in
             "google" | "g")
                 read -p "What is the name of your project?(google cloud): " pj
@@ -155,6 +160,23 @@ if [ $# -ne 0 ]; then
                         ;;
                 esac
                 ;;
+            "local" | "l")
+                dir=$(basename `pwd`)
+                [ -z "$dir" ] && echo "No project name entered..." && exit 4
+                case "$op" in
+                    "--dryrun" | "-d")
+                        echo "dryrun..."
+                        echo "===================================================================="
+                        fc_local $dir
+                        echo "===================================================================="
+                        ;;
+                    "--create" | "-c" | "--generate" | "-g")
+                        result=`fc_local $dir`
+                        echo "create .envrc file"
+                        echo "$result" > .envrc
+                        ;;
+                esac
+                ;;
             *)
                 echo "Ops! This provider does not support"
                 ;;
@@ -167,3 +189,4 @@ if [ $# -ne 0 ]; then
 else
     help
 fi
+
